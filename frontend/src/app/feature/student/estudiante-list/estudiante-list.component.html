@@ -1,0 +1,55 @@
+<div class="listado-container">
+  <h2>📘 Lista de Estudiantes</h2>
+
+  <div class="filtros">
+    <input type="text" placeholder="Buscar por nombre" [(ngModel)]="filtroNombre" (input)="filtrar()" />
+    <input type="text" placeholder="Buscar por programa" [(ngModel)]="filtroPrograma" (input)="filtrar()" />
+
+    <select [(ngModel)]="filtroDepartamento" (change)="onDepartamentoChange()">
+      <option value="">-- Departamento --</option>
+      <option *ngFor="let d of departamentos" [value]="d">{{ d }}</option>
+    </select>
+
+    <select [(ngModel)]="filtroProvincia" (change)="onProvinciaChange()">
+      <option value="">-- Provincia --</option>
+      <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+    </select>
+
+    <select [(ngModel)]="filtroDistrito" (change)="filtrar()">
+      <option value="">-- Distrito --</option>
+      <option *ngFor="let d of distritos" [value]="d">{{ d }}</option>
+    </select>
+
+    <button (click)="descargarPDF()">📄 Descargar PDF</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Apellidos</th>
+        <th>Nombres</th>
+        <th>DNI</th>
+        <th>Programa</th>
+        <th>Departamento</th>
+        <th>Provincia</th>
+        <th>Distrito</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of estudiantesFiltrados">
+        <td>{{ e.apellidos }}</td>
+        <td>{{ e.nombres }}</td>
+        <td>{{ e.dni }}</td>
+        <td>{{ e.programa }}</td>
+        <td>{{ e.ubicacion.departamento }}</td>
+        <td>{{ e.ubicacion.provincia }}</td>
+        <td>{{ e.ubicacion.distrito }}</td>
+        <td>
+          <button [routerLink]="['/estudiantes/edit', e.id]">✏️</button>
+          <button (click)="eliminar(e.id)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

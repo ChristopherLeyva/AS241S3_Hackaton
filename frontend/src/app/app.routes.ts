@@ -1,12 +1,11 @@
-
 import { Routes } from '@angular/router';
-import { ClienteListComponent } from './feature/customer/cliente-list/cliente-list.component';
-import { ClienteFormComponent } from './feature/customer/cliente-form/cliente-form.component';
+import { EstudianteListComponent } from './feature/student/estudiante-list/estudiante-list.component';
+import { EstudianteFormComponent } from './feature/student/estudiante-form/estudiante-form.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'clientes/list', pathMatch: 'full' },
-  { path: 'clientes/list', component: ClienteListComponent },
-  { path: 'clientes/new', component: ClienteFormComponent },
-  { path: 'clientes/edit/:id', component: ClienteFormComponent }, 
-  { path: '**', redirectTo: 'clientes/list' }
+  { path: '', redirectTo: 'estudiantes/list', pathMatch: 'full' },
+  { path: 'estudiantes/list', component: EstudianteListComponent },
+  { path: 'estudiantes/new', component: EstudianteFormComponent },
+  { path: 'estudiantes/edit/:id', component: EstudianteFormComponent },
+  { path: '**', redirectTo: 'estudiantes/list' }
 ];

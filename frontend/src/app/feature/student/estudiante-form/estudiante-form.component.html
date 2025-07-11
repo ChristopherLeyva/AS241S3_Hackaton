@@ -1,0 +1,70 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? '✏️ Editar' : '📝 Registrar' }} Estudiante</h2>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="grid">
+      <label>Nombres:
+        <input formControlName="nombres" type="text" />
+      </label>
+
+      <label>Apellidos:
+        <input formControlName="apellidos" type="text" />
+      </label>
+
+      <label>DNI:
+        <input formControlName="dni" type="text" maxlength="8" />
+      </label>
+
+      <label>Fecha de Nacimiento:
+        <input formControlName="fechaNacimiento" type="date" />
+      </label>
+
+      <label>Email:
+        <input formControlName="email" type="email" />
+      </label>
+
+      <label>Celular:
+        <input formControlName="celular" type="text" maxlength="9" />
+      </label>
+
+      <label>Programa:
+        <select formControlName="programa">
+          <option value="">-- Seleccione --</option>
+          <option>Computación</option>
+          <option>Contabilidad</option>
+          <option>Enfermería</option>
+          <option>Administración</option>
+        </select>
+      </label>
+
+      <label>Año de ingreso:
+        <input formControlName="anioIngreso" type="number" min="2000" />
+      </label>
+
+      <label>Departamento:
+        <select formControlName="departamento" (change)="onDepartamentoChange()">
+          <option value="">-- Seleccione --</option>
+          <option *ngFor="let d of departamentos">{{ d }}</option>
+        </select>
+      </label>
+
+      <label>Provincia:
+        <select formControlName="provincia" (change)="onProvinciaChange()">
+          <option value="">-- Seleccione --</option>
+          <option *ngFor="let p of provincias">{{ p }}</option>
+        </select>
+      </label>
+
+      <label>Distrito:
+        <select formControlName="distrito">
+          <option value="">-- Seleccione --</option>
+          <option *ngFor="let d of distritos">{{ d }}</option>
+        </select>
+      </label>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">
+      {{ isEditMode ? 'Actualizar' : 'Registrar' }}
+    </button>
+  </form>
+</div>
