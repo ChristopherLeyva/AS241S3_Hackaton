@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "92f170f3-d4e1-462d-a7bd-0148a077733d",
+		"name": "CRUD Estudiante - Valle Grande",
+		"description": "Colección Postman completa para el CRUD de Estudiantes en Spring Boot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35978709"
+	},
+	"item": [
+		{
+			"name": "Listar todos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar nuevo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombres\": \"Daniel\",\n  \"apellidos\": \"Reyes\",\n  \"dni\": \"56789012\",\n  \"fechaNacimiento\": \"2003-11-15\",\n  \"programa\": \"Administración\",\n  \"anioIngreso\": 2024,\n  \"email\": \"daniel@example.com\",\n  \"celular\": \"912345678\",\n  \"ubicacion\": {\n    \"departamento\": \"Tacna\",\n    \"provincia\": \"Tacna\",\n    \"distrito\": \"Tacna\"\n  }\n}\n"
+				},
+				"url": {
+					"raw": "localhost:8085/api/estudiante/save",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar estudiante",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 1,\n  \"nombres\": \"Carlos\",\n  \"apellidos\": \"Martinez\",\n  \"dni\": \"23456789\",\n  \"fechaNacimiento\": \"2003-03-15\",\n  \"programa\": \"Contabilidad y Finanzas\",\n  \"anioIngreso\": 2021,\n  \"email\": \"carlos@example.com\",\n  \"celular\": \"976543210\",\n  \"departamento\": \"Lima\",\n  \"provincia\": \"Lima\",\n  \"distrito\": \"Comas\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8085/api/estudiante/update",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar lógico",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante/delete-logico/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"delete-logico",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Restaurar",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante/restore/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"restore",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar físico",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante/delete-fisico/9",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"delete-fisico",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filtrar por estado (Activos)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8085/api/estudiante/estado/A",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"estudiante",
+						"estado",
+						"A"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generar PDF",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/estudiante/pdf",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudiante",
+						"pdf"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
