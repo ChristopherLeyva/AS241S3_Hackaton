@@ -1,0 +1,32 @@
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# IntelliJ IDEA / Eclipse
+*.iml
+*.ipr
+*.iws
+.idea/
+*.classpath
+*.project
+*.settings/
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de log o temporales
+*.log
+*.tmp
+
+# Propiedades locales (si no quieres subirlas)
+/application-local.properties

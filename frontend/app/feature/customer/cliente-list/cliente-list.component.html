@@ -1,0 +1,128 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Listado de Clientes</h2>
+  </div>
+  <div class="card-content">
+    <div
+      class="feedback-message"
+      [ngClass]="{
+        success: mensajeTipo === 'success',
+        error: mensajeTipo === 'error'
+      }"
+      *ngIf="mensajeFeedback"
+    >
+      {{ mensajeFeedback }}
+    </div>
+
+    <div class="filter-controls">
+      <label for="estadoFiltro" class="label-select">Mostrar clientes:</label>
+      <select
+        id="estadoFiltro"
+        [(ngModel)]="filtroEstado"
+        (change)="onEstadoChange()"
+      >
+        <option value="A">Activos</option>
+        <option value="I">Inactivos</option>
+      </select>
+      <button class="btn btn-primary" (click)="addCliente()">
+        + Nuevo Cliente
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Tipo Doc.</th>
+            <th>Número Doc.</th>
+            <th>Celular</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cliente of clientes">
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.firstName }}</td>
+            <td>{{ cliente.lastName }}</td>
+            <td>{{ cliente.documentType }}</td>
+            <td>{{ cliente.documentNumber }}</td>
+            <td>{{ cliente.phoneNumber }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>
+              <span
+                class="estado-tag"
+                [ngClass]="{
+                  'estado-activo': cliente.estado === 'A',
+                  'estado-inactivo': cliente.estado === 'I'
+                }"
+                >{{ cliente.estado === "A" ? "Activo" : "Inactivo" }}</span
+              >
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button
+                  class="btn btn-icon btn-edit"
+                  (click)="editCliente(cliente)"
+                  title="Editar"
+                >
+                  <i class="icon-edit"></i>
+                </button>
+
+                <button
+                  class="btn btn-icon btn-deactivate"
+                  *ngIf="cliente.estado === 'A'"
+                  (click)="deleteClienteLogico(cliente.id)"
+                  title="Desactivar"
+                >
+                  <i class="icon-deactivate"></i>
+                </button>
+
+                <button
+                  class="btn btn-icon btn-restore"
+                  *ngIf="cliente.estado === 'I'"
+                  (click)="restoreCliente(cliente.id)"
+                  title="Restaurar"
+                >
+                  <i class="icon-restore"></i>
+                </button>
+
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="clientes.length === 0">
+            <td colspan="9" class="no-data">No hay clientes para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-overlay"
+  *ngIf="isFormModalOpen"
+  (click)="handleFormCancelled()"
+>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ formModalTitle }}</h3>
+      <button class="modal-close-button" (click)="handleFormCancelled()">
+        X
+      </button>
+    </div>
+    <div class="modal-body">
+      <app-cliente-form
+        [clienteDataFromParent]="clienteToEdit"
+        [isModalMode]="true"
+        (formSubmitted)="handleFormSubmitted($event)"
+        (formCancelled)="handleFormCancelled()"
+      >
+      </app-cliente-form>
+    </div>
+  </div>
+</div>

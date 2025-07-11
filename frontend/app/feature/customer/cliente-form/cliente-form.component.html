@@ -1,0 +1,186 @@
+<form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
+  <div class="card">
+    <div class="card-content">
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="registrationDate" />
+
+      <div class="form-group">
+        <label for="firstName">Nombre:</label>
+        <input
+          type="text"
+          id="firstName"
+          formControlName="firstName"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('firstName')?.invalid &&
+            clienteForm.get('firstName')?.touched
+          "
+        />
+        <div
+          *ngIf="
+            clienteForm.get('firstName')?.invalid &&
+            clienteForm.get('firstName')?.touched
+          "
+          class="invalid-feedback"
+        >
+          Nombre es requerido y solo debe contener letras.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Apellido:</label>
+        <input
+          type="text"
+          id="lastName"
+          formControlName="lastName"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('lastName')?.invalid &&
+            clienteForm.get('lastName')?.touched
+          "
+        />
+        <div
+          *ngIf="
+            clienteForm.get('lastName')?.invalid &&
+            clienteForm.get('lastName')?.touched
+          "
+          class="invalid-feedback"
+        >
+          Apellido es requerido y solo debe contener letras.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="documentType">Tipo de Documento:</label>
+        <select
+          id="documentType"
+          formControlName="documentType"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('documentType')?.invalid &&
+            clienteForm.get('documentType')?.touched
+          "
+        >
+          <option value="">Seleccione</option>
+          <option value="DNI">DNI</option>
+          <option value="CNE">CNE</option>
+        </select>
+        <div
+          *ngIf="
+            clienteForm.get('documentType')?.invalid &&
+            clienteForm.get('documentType')?.touched
+          "
+          class="invalid-feedback"
+        >
+          Tipo de documento es requerido.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="documentNumber">Número de Documento:</label>
+        <input
+          type="text"
+          id="documentNumber"
+          formControlName="documentNumber"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('documentNumber')?.invalid &&
+            clienteForm.get('documentNumber')?.touched
+          "
+          #documentNumberInput [attr.maxlength]="
+            clienteForm.get('documentType')?.value === 'DNI' ? 8 :
+            clienteForm.get('documentType')?.value === 'CNE' ? 20 : null
+          "
+          (input)="onDocumentNumberInput($event)" />
+        <div
+          *ngIf="
+            clienteForm.get('documentNumber')?.invalid &&
+            clienteForm.get('documentNumber')?.touched
+          "
+          class="invalid-feedback"
+        >
+          Número de documento es requerido
+          <span
+            *ngIf="
+              clienteForm.get('documentType')?.value === 'DNI' &&
+              clienteForm.get('documentNumber')?.errors?.['pattern']
+            "
+            >(8 dígitos)</span
+          >
+          <span
+            *ngIf="
+              clienteForm.get('documentType')?.value === 'CNE' && clienteForm.get('documentNumber')?.errors?.['pattern']
+            "
+            >(20 alfanuméricos)</span
+          >.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Número de Teléfono:</label>
+        <input
+          type="text"
+          id="phoneNumber"
+          formControlName="phoneNumber"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('phoneNumber')?.invalid &&
+            clienteForm.get('phoneNumber')?.touched
+          "
+          maxlength="9" (input)="onPhoneNumberInput($event)" />
+        <div
+          *ngIf="
+            clienteForm.get('phoneNumber')?.invalid &&
+            clienteForm.get('phoneNumber')?.touched
+          "
+          class="invalid-feedback"
+        >
+          Número de teléfono es requerido (9 dígitos y empieza con 9).
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="
+            clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched
+          "
+        />
+        <div
+          *ngIf="clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched"
+          class="invalid-feedback"
+        >
+          Email es requerido y debe ser válido.
+        </div>
+      </div>
+
+      <div
+        class="feedback-message"
+        [ngClass]="{
+          success: mensajeTipo === 'success',
+          error: mensajeTipo === 'error'
+        }"
+        *ngIf="mensajeFeedback"
+      >
+        {{ mensajeFeedback }}
+      </div>
+
+      <div class="button-group">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="clienteForm.invalid"
+        >
+          Guardar
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
