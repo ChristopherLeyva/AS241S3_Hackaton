@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 
+// Definimos el tipo para los datos anidados
+type UbigeoData = {
+  [departamento: string]: {
+    [provincia: string]: string[]; // Cada provincia tiene una lista de distritos
+  };
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class UbigeoService {
-  private data = {
+  private data: UbigeoData = {
     Lima: {
       Lima: ['San Juan de Lurigancho', 'Comas', 'Miraflores'],
       Huaral: ['Huaral', 'Chancay'],
