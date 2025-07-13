@@ -7,12 +7,12 @@ import { Estudiante } from '../interfaces/estudiante';
   providedIn: 'root'
 })
 export class EstudianteService {
-  private apiUrl = 'http://localhost:8085/api/estudiantes';
+  private apiUrl = 'http://localhost:8085/api/estudiante';
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Estudiante[]> {
-    return this.http.get<Estudiante[]>(`${this.apiUrl}/activos`);
+    return this.http.get<Estudiante[]>(`${this.apiUrl}/estado/A`);
   }
 
   getById(id: number): Observable<Estudiante> {
@@ -20,22 +20,23 @@ export class EstudianteService {
   }
 
   create(estudiante: Estudiante): Observable<Estudiante> {
-    return this.http.post<Estudiante>(`${this.apiUrl}`, estudiante);
+    return this.http.post<Estudiante>(`${this.apiUrl}/save`, estudiante);
   }
 
   update(id: number, estudiante: Estudiante): Observable<Estudiante> {
-    return this.http.put<Estudiante>(`${this.apiUrl}/${id}`, estudiante);
+    estudiante.id = id;
+    return this.http.put<Estudiante>(`${this.apiUrl}/update`, estudiante);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/delete-logico/${id}`);
   }
 
   restore(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/restaurar/${id}`, {});
+    return this.http.put<void>(`${this.apiUrl}/restore/${id}`, {});
   }
 
   downloadPDF(): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/reporte`, { responseType: 'blob' });
+    return this.http.get(`${this.apiUrl}/pdf`, { responseType: 'blob' });
   }
 }

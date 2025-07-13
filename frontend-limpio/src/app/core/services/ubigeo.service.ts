@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
-// Definimos el tipo para los datos anidados
 type UbigeoData = {
   [departamento: string]: {
-    [provincia: string]: string[]; // Cada provincia tiene una lista de distritos
+    [provincia: string]: string[];
   };
 };
 
@@ -27,17 +27,15 @@ export class UbigeoService {
     },
   };
 
-  getDepartamentos(): string[] {
-    return Object.keys(this.data);
+  getDepartamentos(): Observable<string[]> {
+    return of(Object.keys(this.data));
   }
 
-  getProvincias(departamento: string): string[] {
-    return this.data[departamento]
-      ? Object.keys(this.data[departamento])
-      : [];
+  getProvincias(departamento: string): Observable<string[]> {
+    return of(this.data[departamento] ? Object.keys(this.data[departamento]) : []);
   }
 
-  getDistritos(departamento: string, provincia: string): string[] {
-    return this.data[departamento]?.[provincia] || [];
+  getDistritos(departamento: string, provincia: string): Observable<string[]> {
+    return of(this.data[departamento]?.[provincia] || []);
   }
 }

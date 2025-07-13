@@ -47,7 +47,8 @@
         <td>{{ e.ubicacion.distrito }}</td>
         <td>
           <button [routerLink]="['/estudiantes/edit', e.id]">✏️</button>
-          <button (click)="eliminar(e.id)">🗑️</button>
+          <button *ngIf="e.id !== undefined" (click)="eliminar(e.id!)">🗑️</button>
+
         </td>
       </tr>
     </tbody>

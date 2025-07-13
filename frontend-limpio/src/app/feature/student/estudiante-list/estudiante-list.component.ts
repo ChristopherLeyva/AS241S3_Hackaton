@@ -1,12 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { EstudianteService } from '../../services/estudiante.service';
-import { UbigeoService } from '../../services/ubigeo.service';
-import { Estudiante } from '../../interfaces/estudiante';
+import { CommonModule } from '@angular/common';       
+import { FormsModule } from '@angular/forms';         
+import { RouterModule } from '@angular/router';      
+
+import { EstudianteService } from '@core/services/estudiante.service';
+import { UbigeoService } from '@core/services/ubigeo.service';
+import { Estudiante } from '@core/interfaces/estudiante';
 
 @Component({
+  standalone: true,                                   
   selector: 'app-estudiante-list',
   templateUrl: './estudiante-list.component.html',
-  styleUrls: ['./estudiante-list.component.scss']
+  styleUrls: ['./estudiante-list.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ]
 })
 export class EstudianteListComponent implements OnInit {
   estudiantes: Estudiante[] = [];
@@ -28,12 +38,14 @@ export class EstudianteListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.departamentos = this.ubigeoService.getDepartamentos();
+    this.ubigeoService.getDepartamentos().subscribe((data: string[]) => {
+      this.departamentos = data;
+    });
     this.listar();
   }
 
   listar(): void {
-    this.estudianteService.getAll().subscribe((data) => {
+    this.estudianteService.getAll().subscribe((data: Estudiante[]) => {
       this.estudiantes = data.filter(e => e.estado === 'A');
       this.ordenar();
       this.filtrar();
@@ -45,17 +57,21 @@ export class EstudianteListComponent implements OnInit {
   }
 
   onDepartamentoChange() {
-    this.provincias = this.ubigeoService.getProvincias(this.filtroDepartamento);
-    this.filtroProvincia = '';
-    this.filtroDistrito = '';
-    this.distritos = [];
-    this.filtrar();
+    this.ubigeoService.getProvincias(this.filtroDepartamento).subscribe((data: string[]) => {
+      this.provincias = data;
+      this.filtroProvincia = '';
+      this.filtroDistrito = '';
+      this.distritos = [];
+      this.filtrar();
+    });
   }
 
   onProvinciaChange() {
-    this.distritos = this.ubigeoService.getDistritos(this.filtroDepartamento, this.filtroProvincia);
-    this.filtroDistrito = '';
-    this.filtrar();
+    this.ubigeoService.getDistritos(this.filtroDepartamento, this.filtroProvincia).subscribe((data: string[]) => {
+      this.distritos = data;
+      this.filtroDistrito = '';
+      this.filtrar();
+    });
   }
 
   filtrar() {
@@ -81,7 +97,7 @@ export class EstudianteListComponent implements OnInit {
   }
 
   descargarPDF() {
-    this.estudianteService.downloadPDF().subscribe(blob => {
+    this.estudianteService.downloadPDF().subscribe((blob: Blob | MediaSource) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte_estudiantes.pdf';

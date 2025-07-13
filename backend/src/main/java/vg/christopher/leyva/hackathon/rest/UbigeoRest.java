@@ -1,3 +1,10 @@
+package vg.christopher.leyva.hackathon.rest;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/ubigeo")
 @RequiredArgsConstructor

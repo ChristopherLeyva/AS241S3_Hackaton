@@ -1,23 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { EstudianteService } from '../../../../core/services/estudiante.service';
-import { UbigeoService } from '../../../../core/services/ubigeo.service';
-import { Estudiante } from '../../../../core/interfaces/estudiante';
-
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { EstudianteService } from '@core/services/estudiante.service';
+import { UbigeoService } from '@core/services/ubigeo.service';
+import { Estudiante } from '@core/interfaces/estudiante';
 
 @Component({
   selector: 'app-estudiante-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
   templateUrl: './estudiante-form.component.html',
-  styleUrls: ['./estudiante-form.component.scss'],
+  styleUrls: ['./estudiante-form.component.scss']
 })
 export class EstudianteFormComponent implements OnInit {
   form: FormGroup;
-  isEditMode = false; // Cambiar a true si se está editando
-  estudianteId: number | null = null; // ID del estudiante a editar
-  departamentos: string[] = []; // Lista de departamentos
-  provincias: string[] = []; // Lista de provincias
-  distritos: string[] = []; // Lista de distritos
+  isEditMode = false;
+  estudianteId: number | null = null;
+  departamentos: string[] = [];
+  provincias: string[] = [];
+  distritos: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +54,6 @@ export class EstudianteFormComponent implements OnInit {
   }
 
   loadUbigeoData() {
-    // Cargar departamentos, provincias y distritos desde el servicio
     this.ubigeoService.getDepartamentos().subscribe((departamentos: string[]) => {
       this.departamentos = departamentos;
     });
@@ -58,9 +63,9 @@ export class EstudianteFormComponent implements OnInit {
     const departamento = this.form.get('departamento')?.value;
     this.ubigeoService.getProvincias(departamento).subscribe((provincias: string[]) => {
       this.provincias = provincias;
-      this.distritos = []; // Limpiar distritos al cambiar de departamento
-      this.form.get('provincia')?.setValue(''); // Reiniciar provincia
-      this.form.get('distrito')?.setValue(''); // Reiniciar distrito
+      this.distritos = [];
+      this.form.get('provincia')?.setValue('');
+      this.form.get('distrito')?.setValue('');
     });
   }
 
@@ -72,55 +77,51 @@ export class EstudianteFormComponent implements OnInit {
     });
   }
 
-loadEstudianteData() {
-  this.estudianteService.getById(this.estudianteId!).subscribe((estudiante: { [x: string]: any; ubicacion: any; }) => {
-    const { ubicacion, ...rest } = estudiante;
-    this.form.patchValue({
-      ...rest,
-      departamento: ubicacion.departamento,
-      provincia: ubicacion.provincia,
-      distrito: ubicacion.distrito
-    });
+  loadEstudianteData() {
+    this.estudianteService.getById(this.estudianteId!).subscribe((estudiante) => {
+      const { ubicacion, ...rest } = estudiante;
+      this.form.patchValue({
+        ...rest,
+        departamento: ubicacion.departamento,
+        provincia: ubicacion.provincia,
+        distrito: ubicacion.distrito
+      });
 
-    // También carga provincias y distritos
-    this.ubigeoService.getProvincias(ubicacion.departamento).subscribe((provincias: string[]) => {
-      this.provincias = provincias;
-      this.ubigeoService.getDistritos(ubicacion.departamento, ubicacion.provincia).subscribe((distritos: string[]) => {
-        this.distritos = distritos;
+      this.ubigeoService.getProvincias(ubicacion.departamento).subscribe((provincias: string[]) => {
+        this.provincias = provincias;
+        this.ubigeoService.getDistritos(ubicacion.departamento, ubicacion.provincia).subscribe((distritos: string[]) => {
+          this.distritos = distritos;
+        });
       });
     });
-  });
-}
-
-
-guardar() {
-  if (this.form.invalid) {
-    return;
   }
 
-  const formValue = this.form.value;
-
-  const estudianteData: Estudiante = {
-    ...formValue,
-    ubicacion: {
-      departamento: formValue.departamento,
-      provincia: formValue.provincia,
-      distrito: formValue.distrito
+  guardar() {
+    if (this.form.invalid) {
+      return;
     }
-  };
 
-  // Eliminar los campos independientes si no se desean duplicados
-  delete (estudianteData as any).departamento;
-  delete (estudianteData as any).provincia;
-  delete (estudianteData as any).distrito;
+    const formValue = this.form.value;
 
-  const request$ = this.isEditMode
-    ? this.estudianteService.update(this.estudianteId!, estudianteData)
-    : this.estudianteService.create(estudianteData);
+    const estudianteData: Estudiante = {
+      ...formValue,
+      ubicacion: {
+        departamento: formValue.departamento,
+        provincia: formValue.provincia,
+        distrito: formValue.distrito
+      }
+    };
 
-  request$.subscribe(() => {
-    this.router.navigate(['/estudiantes/list']);
-  });
-}
+    delete (estudianteData as any).departamento;
+    delete (estudianteData as any).provincia;
+    delete (estudianteData as any).distrito;
 
+    const request$ = this.isEditMode
+      ? this.estudianteService.update(this.estudianteId!, estudianteData)
+      : this.estudianteService.create(estudianteData);
+
+    request$.subscribe(() => {
+      this.router.navigate(['/estudiantes/list']);
+    });
+  }
 }
