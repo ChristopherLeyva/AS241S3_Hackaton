@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "my-project-scss": {
+    "frontend-limpio": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/my-project-scss",
+            "outputPath": "dist/frontend-limpio",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -32,7 +32,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -70,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "my-project-scss:build:production"
+              "buildTarget": "frontend-limpio:build:production"
             },
             "development": {
-              "buildTarget": "my-project-scss:build:development"
+              "buildTarget": "frontend-limpio:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -97,7 +96,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -105,8 +103,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "1b7ad241-99b7-4d64-aba8-347f92106eb7"
   }
 }

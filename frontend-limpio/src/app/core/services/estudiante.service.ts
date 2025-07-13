@@ -7,17 +7,12 @@ import { Estudiante } from '../interfaces/estudiante';
   providedIn: 'root'
 })
 export class EstudianteService {
-
   private apiUrl = 'http://localhost:8085/api/estudiantes';
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Estudiante[]> {
     return this.http.get<Estudiante[]>(`${this.apiUrl}/activos`);
-  }
-
-  getInactivos(): Observable<Estudiante[]> {
-    return this.http.get<Estudiante[]>(`${this.apiUrl}/inactivos`);
   }
 
   getById(id: number): Observable<Estudiante> {

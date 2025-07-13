@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudianteService } from '../../services/estudiante.service';
 import { UbigeoService } from '../../services/ubigeo.service';
-import { Estudiante } from '../../models/estudiante.model';
+import { Estudiante } from '../../interfaces/estudiante';
 
 @Component({
   selector: 'app-estudiante-list',
@@ -33,7 +33,7 @@ export class EstudianteListComponent implements OnInit {
   }
 
   listar(): void {
-    this.estudianteService.listar().subscribe((data) => {
+    this.estudianteService.getAll().subscribe((data) => {
       this.estudiantes = data.filter(e => e.estado === 'A');
       this.ordenar();
       this.filtrar();
@@ -70,17 +70,22 @@ export class EstudianteListComponent implements OnInit {
 
   eliminar(id: number) {
     if (confirm('¿Eliminar estudiante?')) {
-      this.estudianteService.eliminar(id).subscribe(() => this.listar());
+      this.estudianteService.delete(id).subscribe(() => this.listar());
     }
   }
 
   restaurar(id: number) {
     if (confirm('¿Restaurar estudiante?')) {
-      this.estudianteService.restaurar(id).subscribe(() => this.listar());
+      this.estudianteService.restore(id).subscribe(() => this.listar());
     }
   }
 
   descargarPDF() {
-    this.estudianteService.descargarPDF();
+    this.estudianteService.downloadPDF().subscribe(blob => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte_estudiantes.pdf';
+      link.click();
+    });
   }
 }

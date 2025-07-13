@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { EstudianteService } from '../services/estudiante.service';
-import { UbigeoService } from '../services/ubigeo.service';
-import { Estudiante } from '../interfaces/estudiante';
+import { EstudianteService } from '../../../../core/services/estudiante.service';
+import { UbigeoService } from '../../../../core/services/ubigeo.service';
+import { Estudiante } from '../../../../core/interfaces/estudiante';
+
 
 @Component({
   selector: 'app-estudiante-form',
@@ -48,14 +49,14 @@ export class EstudianteFormComponent implements OnInit {
 
   loadUbigeoData() {
     // Cargar departamentos, provincias y distritos desde el servicio
-    this.ubigeoService.getDepartamentos().subscribe(departamentos => {
+    this.ubigeoService.getDepartamentos().subscribe((departamentos: string[]) => {
       this.departamentos = departamentos;
     });
   }
 
   onDepartamentoChange() {
     const departamento = this.form.get('departamento')?.value;
-    this.ubigeoService.getProvincias(departamento).subscribe(provincias => {
+    this.ubigeoService.getProvincias(departamento).subscribe((provincias: string[]) => {
       this.provincias = provincias;
       this.distritos = []; // Limpiar distritos al cambiar de departamento
       this.form.get('provincia')?.setValue(''); // Reiniciar provincia
@@ -66,31 +67,60 @@ export class EstudianteFormComponent implements OnInit {
   onProvinciaChange() {
     const departamento = this.form.get('departamento')?.value;
     const provincia = this.form.get('provincia')?.value;
-    this.ubigeoService.getDistritos(departamento, provincia).subscribe(distritos => {
+    this.ubigeoService.getDistritos(departamento, provincia).subscribe((distritos: string[]) => {
       this.distritos = distritos;
     });
   }
 
-  loadEstudianteData() {
-    // Cargar datos del estudiante a editar
-    this.estudianteService.getById(this.estudianteId!).subscribe(estudiante => {
-      this.form.patchValue(estudiante);
+loadEstudianteData() {
+  this.estudianteService.getById(this.estudianteId!).subscribe((estudiante: { [x: string]: any; ubicacion: any; }) => {
+    const { ubicacion, ...rest } = estudiante;
+    this.form.patchValue({
+      ...rest,
+      departamento: ubicacion.departamento,
+      provincia: ubicacion.provincia,
+      distrito: ubicacion.distrito
     });
+
+    // También carga provincias y distritos
+    this.ubigeoService.getProvincias(ubicacion.departamento).subscribe((provincias: string[]) => {
+      this.provincias = provincias;
+      this.ubigeoService.getDistritos(ubicacion.departamento, ubicacion.provincia).subscribe((distritos: string[]) => {
+        this.distritos = distritos;
+      });
+    });
+  });
+}
+
+
+guardar() {
+  if (this.form.invalid) {
+    return;
   }
 
-  guardar() {
-    if (this.form.invalid) {
-      return;
+  const formValue = this.form.value;
+
+  const estudianteData: Estudiante = {
+    ...formValue,
+    ubicacion: {
+      departamento: formValue.departamento,
+      provincia: formValue.provincia,
+      distrito: formValue.distrito
     }
+  };
 
-    const estudianteData: Estudiante = this.form.value;
+  // Eliminar los campos independientes si no se desean duplicados
+  delete (estudianteData as any).departamento;
+  delete (estudianteData as any).provincia;
+  delete (estudianteData as any).distrito;
 
-    const request$ = this.isEditMode
-      ? this.estudianteService.update(this.estudianteId!, estudianteData)
-      : this.estudianteService.create(estudianteData);
+  const request$ = this.isEditMode
+    ? this.estudianteService.update(this.estudianteId!, estudianteData)
+    : this.estudianteService.create(estudianteData);
 
-    request$.subscribe(() => {
-      this.router.navigate(['/estudiantes/list']);
-    });
-  }
+  request$.subscribe(() => {
+    this.router.navigate(['/estudiantes/list']);
+  });
+}
+
 }
