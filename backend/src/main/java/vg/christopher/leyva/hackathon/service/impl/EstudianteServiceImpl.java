@@ -94,7 +94,7 @@ public class EstudianteServiceImpl implements EstudianteService {
 
     @Override
     public byte[] generateJasperPdfReport() throws Exception {
-        InputStream jasperStream = new ClassPathResource("reports/supplier.jasper").getInputStream();
+        InputStream jasperStream = new ClassPathResource("reports/student_report.jasper").getInputStream();
         HashMap<String, Object> params = new HashMap<>();
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, dataSource.getConnection());
         return JasperExportManager.exportReportToPdf(jasperPrint);

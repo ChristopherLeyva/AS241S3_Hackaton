@@ -1,69 +1,87 @@
 <div class="form-container">
-  <h2>{{ isEditMode ? '✏️ Editar' : '📝 Registrar' }} Estudiante</h2>
+  <form [formGroup]="estudianteForm" (ngSubmit)="onSubmit()">
 
-  <form [formGroup]="form" (ngSubmit)="guardar()">
-    <div class="grid">
-      <label>Nombres:
-        <input formControlName="nombres" type="text" />
-      </label>
-
-      <label>Apellidos:
-        <input formControlName="apellidos" type="text" />
-      </label>
-
-      <label>DNI:
-        <input formControlName="dni" type="text" maxlength="8" />
-      </label>
-
-      <label>Fecha de Nacimiento:
-        <input formControlName="fechaNacimiento" type="date" />
-      </label>
-
-      <label>Email:
-        <input formControlName="email" type="email" />
-      </label>
-
-      <label>Celular:
-        <input formControlName="celular" type="text" maxlength="9" />
-      </label>
-
-      <label>Programa:
-        <select formControlName="programa">
-          <option value="">-- Seleccione --</option>
-          <option>Computación</option>
-          <option>Contabilidad</option>
-          <option>Enfermería</option>
-          <option>Administración</option>
-        </select>
-      </label>
-
-      <label>Año de ingreso:
-        <input formControlName="anioIngreso" type="number" min="2000" />
-      </label>
-
-      <label>Departamento:
-        <select formControlName="departamento" (change)="onDepartamentoChange()">
-          <option value="">-- Seleccione --</option>
-          <option *ngFor="let d of departamentos">{{ d }}</option>
-        </select>
-      </label>
-
-      <label>Provincia:
-        <select formControlName="provincia" (change)="onProvinciaChange()">
-          <option value="">-- Seleccione --</option>
-          <option *ngFor="let p of provincias">{{ p }}</option>
-        </select>
-      </label>
-
-      <label>Distrito:
-        <select formControlName="distrito">
-          <option value="">-- Seleccione --</option>
-          <option *ngFor="let d of distritos">{{ d }}</option>
-        </select>
-      </label>
+    <div>
+      <label>DNI:</label>
+      <input type="text" formControlName="dni" maxlength="8" pattern="^\d{8}$">
+      <div *ngIf="f('dni').invalid && f('dni').touched">
+        DNI debe tener exactamente 8 dígitos numéricos.
+      </div>
     </div>
 
-    <button type="submit" [disabled]="form.invalid">
+    <div>
+      <label>Nombres:</label>
+      <input type="text" formControlName="nombres" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$">
+      <div *ngIf="f('nombres').invalid && f('nombres').touched">
+        Solo letras y espacios permitidos.
+      </div>
+    </div>
+
+    <div>
+      <label>Apellidos:</label>
+      <input type="text" formControlName="apellidos" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$">
+      <div *ngIf="f('apellidos').invalid && f('apellidos').touched">
+        Solo letras y espacios permitidos.
+      </div>
+    </div>
+
+    <div>
+      <label>Email:</label>
+      <input type="email" formControlName="email">
+      <div *ngIf="f('email').invalid && f('email').touched">
+        Correo inválido (solo minúsculas, sin espacios).
+      </div>
+    </div>
+
+    <div>
+      <label>Celular:</label>
+      <input type="text" formControlName="celular" maxlength="9" pattern="^9\d{8}$">
+      <div *ngIf="f('celular').invalid && f('celular').touched">
+        Debe comenzar con 9 y tener 9 dígitos.
+      </div>
+    </div>
+
+    <div>
+      <label>Programa:</label>
+      <input type="text" formControlName="programa">
+      <div *ngIf="f('programa').invalid && f('programa').touched">
+        Campo requerido.
+      </div>
+    </div>
+
+    <div>
+      <label>Año de Ingreso:</label>
+      <input type="number" formControlName="anioIngreso" min="2000" [max]="currentYear">
+      <div *ngIf="f('anioIngreso').invalid && f('anioIngreso').touched">
+        Debe estar entre 2000 y {{ currentYear }}.
+      </div>
+    </div>
+
+    <div>
+      <label>Departamento:</label>
+      <select formControlName="departamento" (change)="onDepartamentoChange($event)">
+        <option value="">-- Seleccione --</option>
+        <option *ngFor="let d of departamentos" [value]="d">{{ d }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Provincia:</label>
+      <select formControlName="provincia" (change)="onProvinciaChange($event)">
+        <option value="">-- Seleccione --</option>
+        <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Distrito:</label>
+      <select formControlName="distrito">
+        <option value="">-- Seleccione --</option>
+        <option *ngFor="let d of distritos" [value]="d">{{ d }}</option>
+      </select>
+    </div>
+
+    <button type="submit">
       {{ isEditMode ? 'Actualizar' : 'Registrar' }}
     </button>
   </form>

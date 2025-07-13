@@ -1,127 +1,92 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { EstudianteService } from '@core/services/estudiante.service';
 import { UbigeoService } from '@core/services/ubigeo.service';
-import { Estudiante } from '@core/interfaces/estudiante';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-estudiante-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule
-  ],
+  selector: 'app-estudiante-form',
   templateUrl: './estudiante-form.component.html',
-  styleUrls: ['./estudiante-form.component.scss']
+  styleUrls: ['./estudiante-form.component.scss'],
+
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class EstudianteFormComponent implements OnInit {
-  form: FormGroup;
+  fb = inject(FormBuilder);
+  ubigeoService = inject(UbigeoService);
+
+  estudianteForm!: FormGroup;
+  currentYear: number = new Date().getFullYear();
   isEditMode = false;
-  estudianteId: number | null = null;
+
   departamentos: string[] = [];
   provincias: string[] = [];
   distritos: string[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private estudianteService: EstudianteService,
-    private ubigeoService: UbigeoService
-  ) {
-    this.form = this.fb.group({
-      nombres: ['', Validators.required],
-      apellidos: ['', Validators.required],
-      dni: ['', [Validators.required, Validators.maxLength(8)]],
-      fechaNacimiento: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      celular: ['', [Validators.required, Validators.maxLength(9)]],
+  async ngOnInit() {
+    this.estudianteForm = this.fb.group({
+      dni: ['', [
+        Validators.required,
+        Validators.pattern(/^\d{8}$/)
+      ]],
+      nombres: ['', [
+        Validators.required,
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/)
+      ]],
+      apellidos: ['', [
+        Validators.required,
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/)
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)
+      ]],
+      celular: ['', [
+        Validators.required,
+        Validators.pattern(/^9\d{8}$/)
+      ]],
       programa: ['', Validators.required],
-      anioIngreso: ['', [Validators.required, Validators.min(2000)]],
+      anioIngreso: ['', [
+        Validators.required,
+        Validators.min(2000),
+        Validators.max(this.currentYear)
+      ]],
       departamento: ['', Validators.required],
       provincia: ['', Validators.required],
       distrito: ['', Validators.required],
     });
+
+    this.departamentos = await firstValueFrom(this.ubigeoService.getDepartamentos());
   }
 
-  ngOnInit(): void {
-    this.loadUbigeoData();
-    if (this.isEditMode) {
-      this.loadEstudianteData();
-    }
+  async onDepartamentoChange(event: Event) {
+    const dept = (event.target as HTMLSelectElement).value;
+    this.provincias = await firstValueFrom(this.ubigeoService.getProvincias(dept));
+    this.distritos = [];
+    this.estudianteForm.get('provincia')?.reset();
+    this.estudianteForm.get('distrito')?.reset();
   }
 
-  loadUbigeoData() {
-    this.ubigeoService.getDepartamentos().subscribe((departamentos: string[]) => {
-      this.departamentos = departamentos;
-    });
+  async onProvinciaChange(event: Event) {
+    const prov = (event.target as HTMLSelectElement).value;
+    const dept = this.estudianteForm.get('departamento')?.value;
+    this.distritos = await firstValueFrom(this.ubigeoService.getDistritos(dept, prov));
+    this.estudianteForm.get('distrito')?.reset();
   }
 
-  onDepartamentoChange() {
-    const departamento = this.form.get('departamento')?.value;
-    this.ubigeoService.getProvincias(departamento).subscribe((provincias: string[]) => {
-      this.provincias = provincias;
-      this.distritos = [];
-      this.form.get('provincia')?.setValue('');
-      this.form.get('distrito')?.setValue('');
-    });
-  }
-
-  onProvinciaChange() {
-    const departamento = this.form.get('departamento')?.value;
-    const provincia = this.form.get('provincia')?.value;
-    this.ubigeoService.getDistritos(departamento, provincia).subscribe((distritos: string[]) => {
-      this.distritos = distritos;
-    });
-  }
-
-  loadEstudianteData() {
-    this.estudianteService.getById(this.estudianteId!).subscribe((estudiante) => {
-      const { ubicacion, ...rest } = estudiante;
-      this.form.patchValue({
-        ...rest,
-        departamento: ubicacion.departamento,
-        provincia: ubicacion.provincia,
-        distrito: ubicacion.distrito
-      });
-
-      this.ubigeoService.getProvincias(ubicacion.departamento).subscribe((provincias: string[]) => {
-        this.provincias = provincias;
-        this.ubigeoService.getDistritos(ubicacion.departamento, ubicacion.provincia).subscribe((distritos: string[]) => {
-          this.distritos = distritos;
-        });
-      });
-    });
-  }
-
-  guardar() {
-    if (this.form.invalid) {
+  onSubmit(): void {
+    if (this.estudianteForm.invalid) {
+      this.estudianteForm.markAllAsTouched();
       return;
     }
 
-    const formValue = this.form.value;
+    const estudiante = this.estudianteForm.value;
+    console.log('Estudiante registrado:', estudiante);
+  }
 
-    const estudianteData: Estudiante = {
-      ...formValue,
-      ubicacion: {
-        departamento: formValue.departamento,
-        provincia: formValue.provincia,
-        distrito: formValue.distrito
-      }
-    };
-
-    delete (estudianteData as any).departamento;
-    delete (estudianteData as any).provincia;
-    delete (estudianteData as any).distrito;
-
-    const request$ = this.isEditMode
-      ? this.estudianteService.update(this.estudianteId!, estudianteData)
-      : this.estudianteService.create(estudianteData);
-
-    request$.subscribe(() => {
-      this.router.navigate(['/estudiantes/list']);
-    });
+  f(campo: string) {
+    return this.estudianteForm.get(campo)!;
   }
 }

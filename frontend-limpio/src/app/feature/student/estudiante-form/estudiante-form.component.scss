@@ -1,61 +1,60 @@
 .form-container {
-  max-width: 800px;
-  margin: auto;
-  padding: 2rem;
   font-family: Arial, sans-serif;
-
-  h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
-    color: #333;
-  }
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
   form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.2rem;
-    }
+    gap: 1.2rem;
 
     label {
-      display: flex;
-      flex-direction: column;
       font-weight: bold;
-      color: #555;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
 
-      input,
-      select {
-        margin-top: 0.4rem;
-        padding: 0.6rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 1rem;
-      }
+    input,
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      transition: border-color 0.2s ease;
 
-      .ubigeo {
-        background-color: #eef6ff;
-        border-color: #90caf9;
+      &:focus {
+        border-color: #007bff;
+        outline: none;
       }
+    }
+
+    div.ng-invalid.ng-touched input,
+    div.ng-invalid.ng-touched select {
+      border-color: #e74c3c;
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 0.875rem;
     }
 
     button {
-      align-self: center;
-      padding: 0.8rem 1.5rem;
+      padding: 0.75rem;
       font-size: 1rem;
-      background-color: #1976d2;
-      color: white;
       border: none;
-      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 0.5rem;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: #0f5eb8;
+        background-color: #0056b3;
       }
 
       &:disabled {
