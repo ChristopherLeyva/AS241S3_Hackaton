@@ -96,7 +96,7 @@ public class EstudianteServiceImpl implements EstudianteService {
 public byte[] generateJasperPdfReport() throws Exception {
 // Cargar archivo .jasper en src/main/resources/reports (SIN USAR IMÁGENES EN EL JASPER)
 InputStream jasperStream = new
-ClassPathResource("reports/student.report.jasper").getInputStream();
+ClassPathResource("reports/student_report.jasper").getInputStream();
 // Sin parámetros
 HashMap<String, Object> params = new HashMap<>();
 // Llenar reporte con conexión a Oracle Cloud con application.yml |
