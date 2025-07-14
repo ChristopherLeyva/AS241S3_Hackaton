@@ -94,8 +94,7 @@ public class EstudianteServiceImpl implements EstudianteService {
 
 @Override
 public byte[] generateJasperPdfReport() throws Exception {
-// Cargar archivo .jasper en src/main/resources/reports (SIN USAR IMÁGENES EN
-EL JASPER)
+// Cargar archivo .jasper en src/main/resources/reports (SIN USAR IMÁGENES EN EL JASPER)
 InputStream jasperStream = new
 ClassPathResource("reports/student.report.jasper").getInputStream();
 // Sin parámetros
