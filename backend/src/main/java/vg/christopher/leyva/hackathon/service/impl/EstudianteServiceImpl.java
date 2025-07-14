@@ -92,12 +92,20 @@ public class EstudianteServiceImpl implements EstudianteService {
         return estudianteRepository.findAllByEstado(estado);
     }
 
-    @Override
-    public byte[] generateJasperPdfReport() throws Exception {
-        InputStream jasperStream = new ClassPathResource("reports/student_report.jasper").getInputStream();
-        HashMap<String, Object> params = new HashMap<>();
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, dataSource.getConnection());
-        return JasperExportManager.exportReportToPdf(jasperPrint);
-    }
+@Override
+public byte[] generateJasperPdfReport() throws Exception {
+// Cargar archivo .jasper en src/main/resources/reports (SIN USAR IMÁGENES EN
+EL JASPER)
+InputStream jasperStream = new
+ClassPathResource("reports/student.report.jasper").getInputStream();
+// Sin parámetros
+HashMap<String, Object> params = new HashMap<>();
+// Llenar reporte con conexión a Oracle Cloud con application.yml |
+aplicación.properties
+JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params,
+dataSource.getConnection());
+// Exportar a PDF
+return JasperExportManager.exportReportToPdf(jasperPrint);
+}
 
 }
